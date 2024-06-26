@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #interval {
+            width: 100%;
+            display: flex;
+            font-size: 90px;
+            justify-content: center
+        }
+        
+        .rightBox {
+            width: 100%;
+            font-size: 30px;
+        }
+        
+        .records {
+            width: 300px;
+            height: 500px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>按任意键开始计时</h1>
+    </div>
+    <div id="interval">
+        <h1 id="minute">00</h1>
+        <h1>:</h1>
+        <h1 id="second">00</h1>
+        <h1>:</h1>
+        <h1 id="millisecond">00</h1>
+        <div class="rightBox">
+            <h3>近五次记录</h3>
+            <div class="records">
+
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    let minute = document.getElementById("minute");
+    let second = document.getElementById("second");
+    let milliSecond = document.getElementById("millisecond");
+    // 历史记录
+    let history = JSON.parse(localStorage.getItem("record")) || [];
+    let mNum = 0;
+    let sNum = 0;
+    let msNum = 0;
+    let flag = false;
+    let timer;
+
+    addEventListener("keydown", function(e) {
+        if (!flag) {
+            flag = true;
+            timer = setInterval(() => {
+                msNum += 50;
+                if (msNum >= 1000) {
+                    msNum = 0;
+                    sNum += 1
+                }
+                if (sNum >= 60) {
+                    sNum = 0;
+                    mNum += 1
+                }
+                minute.innerHTML = addZero(mNum);
+                second.innerHTML = sNum === 0 ? "00" : addZero(sNum);
+                milliSecond.innerHTML = msNum === 0 ? "00" : msNum.toString().substr(0, 2);
+            }, 50)
+        } else {
+            clearInterval(timer);
+            flag = false;
+        }
+    })
+
+    function addZero(params) {
+        return params < 10 ? "0" + params : params;
+    }
+</script>
+
+</html>
